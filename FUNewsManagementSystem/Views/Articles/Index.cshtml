@@ -1,0 +1,176 @@
+﻿<h2>All News Articles</h2>
+<a href="/Articles/Create" id="createBtn" style="display:none;">➕ Create New</a> <!-- initially hidden -->
+<!-- Filters -->
+<div class="d-flex flex-wrap align-items-end gap-3 mb-3">
+    <div class="form-group">
+        <label for="searchTitle">🔍 Search Title</label>
+        <input type="text" id="searchTitle" class="form-control" placeholder="e.g. Graduation, AI" />
+    </div>
+
+    <div class="form-group">
+        <label for="filterCategory">📂 Category</label>
+        <select id="filterCategory" class="form-control">
+            <option value="">All Categories</option>
+        </select>
+    </div>
+
+  
+        <div class="form-group">
+            <label>🏷️ Tags</label>
+            <div id="filterTags" class="d-flex flex-wrap gap-2"></div>
+        </div>
+
+  
+
+    <div class="form-group">
+        <button class="btn btn-primary mt-4" id="searchBtn">🔍 Search</button>
+    </div>
+
+    <div class="form-group ms-auto">
+        <a href="/Articles/Create" id="createBtn" class="btn btn-success mt-4" style="display:none;">➕ Create New</a>
+    </div>
+</div>
+<div class="form-group">
+    <label for="sortField">🔽 Sort by</label>
+    <select id="sortField" class="form-control">
+        <option value="CreatedDate desc">Created Date ⬇️</option>
+        <option value="CreatedDate asc">Created Date ⬆️</option>
+        <option value="NewsArticleId asc">Article ID ⬆️</option>
+        <option value="NewsArticleId desc">Article ID ⬇️</option>
+        <option value="NewsTitle asc">Title ⬆️</option>
+        <option value="NewsTitle desc">Title ⬇️</option>
+        <option value="NewsStatus asc">Status ⬆️</option>
+        <option value="NewsStatus desc">Status ⬇️</option>
+    </select>
+</div>
+
+<table class="table table-bordered mt-3" id="articles-table">
+    <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Headline</th>
+            <th>Created</th>
+            <th>Source</th>
+            <th>Status</th>
+            <th>Category</th>
+            <th>Tags</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+
+                    function buildODataQuery() {
+            const title = $("#searchTitle").val();
+            const category = $("#filterCategory").val();
+            const sortField = $("#sortField").val();
+            const filters = [];
+
+            if (title) filters.push(`contains(NewsTitle,'${title}')`);
+            if (category) filters.push(`CategoryId eq ${category}`);
+
+            const selectedTags = $(".tag-filter:checked").map(function () {
+                return `Tags/any(t: t/TagId eq ${$(this).val()})`;
+            }).get();
+
+            if (selectedTags.length > 0) {
+                filters.push(`(${selectedTags.join(" or ")})`);
+            }
+
+            let query = `?$expand=Tags,Category&$orderby=${sortField || "CreatedDate desc"}`;
+            if (filters.length > 0) {
+                query = `?$filter=${filters.join(" and ")}&$expand=Tags,Category&$orderby=${sortField}`;
+            }
+            return query;
+        }
+
+
+
+        function loadArticles() {
+            const jwt = localStorage.getItem("jwtToken");
+            const query = buildODataQuery();
+
+            $.ajax({
+                url: `https://localhost:7121/odata/Articles${query}`,
+                type: "GET",
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                },
+                success: function (response) {
+                    const tableBody = $("#articles-table tbody").empty();
+                    response.value.forEach(article => {
+                        const tags = (article.Tags ?? []).map(tag => tag.TagName).join(", ");
+                        tableBody.append(`
+                            <tr>
+                                <td>${article.NewsArticleId}</td>
+                                <td>${article.NewsTitle ?? "-"}</td>
+                                <td>${article.Headline ?? "-"}</td>
+                                <td>${article.CreatedDate ? new Date(article.CreatedDate).toLocaleDateString() : "-"}</td>
+                                <td>${article.NewsSource ?? "-"}</td>
+                                <td>${article.NewsStatus ? "✅" : "❌"}</td>
+                               <td>${article.Category?.CategoryName ?? "-"}</td>
+                                <td>${tags || "-"}</td>
+                                <td>
+                                    <a href="/Articles/Update?id=${article.NewsArticleId}">✏️ Update</a> |
+                                    <a href="/Articles/Delete?id=${article.NewsArticleId}">🗑️ Delete</a>
+                                </td>
+                            </tr>`);
+                    });
+                },
+                error: function (xhr) {
+                    console.error("Failed to fetch articles:", xhr);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            const jwt = localStorage.getItem("jwtToken");
+            const decoded = parseJwt(jwt);
+            if (decoded?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "staff") {
+                $("#createBtn").show();
+            }
+
+            // Populate dropdowns
+            $.get("https://localhost:7121/odata/Categories", function (res) {
+                res.value.forEach(c => {
+                    $("#filterCategory").append(`<option value="${c.CategoryId}">${c.CategoryName}</option>`);
+                });
+            });
+
+                     $.get("https://localhost:7121/odata/Tags", function (res) {
+                   if (Array.isArray(res)) {
+            res.forEach(t => {
+                $("#filterTags").append(`
+                    <label class="me-2">
+                        <input type="checkbox" class="tag-filter" value="${t.tagId}" />
+                        ${t.tagName}
+                    </label>
+                `);
+            });
+        } else {
+            console.error("Tag response invalid:", res);
+        }
+
+        });
+
+
+            // Initial load
+            loadArticles();
+
+            // 🔍 Bind search
+            $("#searchBtn").click(() => loadArticles());
+        });
+    </script>
+}
+

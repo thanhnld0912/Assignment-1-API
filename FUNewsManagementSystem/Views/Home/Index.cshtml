@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<h2>All System Accounts</h2>
+<a href="/Account/Create">Create New</a>
+<table class="table" id="account-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be populated by JavaScript -->
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "https://localhost:7121/odata/Accounts",
+                method: "GET",
+                success: function (accounts) {
+                    const tableBody = $("#account-table tbody");
+
+                    accounts.forEach(function (account) {
+                        const row = `
+                            <tr>
+                                <td>${account.accountId}</td>
+                                <td>${account.accountName}</td>
+                                <td>${account.accountEmail}</td>
+                                <td>${account.accountRole}</td>
+                                <td>
+                                    <a href="/Account/Update?id=${account.accountId}">Update</a> |
+                                    <a href="/Account/Delete?id=${account.accountId}">Delete</a>
+                                </td>
+                            </tr>`;
+                        tableBody.append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX error:", error);
+                }
+            });
+        });
+    </script>
+}

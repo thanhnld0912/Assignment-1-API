@@ -1,0 +1,79 @@
+﻿@{
+    var id = Context.Request.Query["id"];
+}
+<h2>Update Category</h2>
+
+<form id="update-form">
+    <input type="hidden" name="categoryId" value="@id" />
+
+    <input name="categoryName" placeholder="Category Name" required />
+    <input name="categoryDesciption" placeholder="Description" required />
+    <div>
+        <label>Parent Category</label>
+        <select name="parentCategoryId" id="parentCategoryId">
+            <option value="">-- None --</option>
+        </select>
+    </div>
+    <label>
+        Active:
+        <input type="checkbox" name="isActive" />
+    </label>
+
+    <button type="submit">Update</button>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        const id = parseInt("@id");
+        $(document).ready(function () {
+            $.get("https://localhost:7054/odata/Categories", function (response) {
+                const options = response.value;
+                const dropdown = $("#parentCategoryId");
+                dropdown.append(`<option value="">-- None --</option>`);
+                options.forEach(function (cat) {
+                    dropdown.append(`<option value="${cat.CategoryId}">${cat.CategoryName}</option>`);
+                });
+
+                // Load current category values
+                      $.get("https://localhost:7054/odata/Categories(" + id + ")", function (cat) {
+            $("input[name=categoryName]").val(cat.CategoryName);
+            $("input[name=categoryDesciption]").val(cat.CategoryDesciption);
+            $("input[name=isActive]").prop("checked", cat.IsActive);
+            $("#parentCategoryId").val(cat.ParentCategoryId);
+        });
+
+            });
+
+            $("#update-form").on("submit", function (e) {
+                e.preventDefault();
+
+                const updatedData = {
+                    CategoryId: id,
+                    CategoryName: $("input[name=categoryName]").val(),
+                    CategoryDesciption: $("input[name=categoryDesciption]").val(),
+                    ParentCategoryId: parseInt($("#parentCategoryId").val()) || null,
+                    IsActive: $("input[name=isActive]").is(":checked")
+                };
+
+                     $.ajax({
+            url: "https://localhost:7054/odata/Categories(" + id + ")",
+            type: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(updatedData),
+            success: function () {
+                alert("Update successful");
+                window.location.href = "/Category/Index";
+            },
+            error: function () {
+                alert("Failed to update category");
+            }
+        });
+
+            });
+        });
+
+    </script>
+
+}

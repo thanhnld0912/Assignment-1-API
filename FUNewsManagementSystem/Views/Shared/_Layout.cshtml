@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FrontEnd</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FrontEnd</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+
+                        <!-- Only for Staff -->
+                        <li class="nav-item d-none" id="staff-category">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
+                        </li>
+                        <li class="nav-item d-none" id="staff-article">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Articles" asp-action="Index">Article</a>
+                        </li>
+
+                        <!-- Only for Admin -->
+                        <li class="nav-item d-none" id="admin-manage">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Manage Accounts</a>
+                        </li>
+
+                        <!-- All Authenticated -->
+                        <li class="nav-item d-none" id="profile-link">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index">Profile</a>
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav">
+                        <li class="nav-item" id="login-link">
+                            <a class="nav-link text-dark" href="/Account/Login">Login</a>
+                        </li>
+                        <li class="nav-item d-none" id="user-greeting">
+                            <span class="nav-link text-primary" id="greeting-text"></span>
+                        </li>
+                        <li class="nav-item d-none" id="logout-link">
+                            <a class="nav-link text-dark" href="#" onclick="logout()">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - FrontEnd - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("jwtToken");
+            window.location.href = "/Account/Login";
+        }
+
+        $(document).ready(function () {
+            const token = localStorage.getItem("jwtToken");
+            if (!token) {
+                $("#login-link").removeClass("d-none");
+                return;
+            }
+
+            const payload = parseJwt(token);
+            const role = payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+            const username = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+
+            $("#login-link").addClass("d-none");
+            $("#logout-link").removeClass("d-none");
+            $("#user-greeting").removeClass("d-none").find("#greeting-text").text(`Hello, ${username}!`);
+            $("#profile-link").removeClass("d-none");
+
+            if (role === "staff") {
+                $("#staff-category").removeClass("d-none");
+                $("#staff-article").removeClass("d-none");
+            } else if (role === "admin") {
+                $("#admin-manage").removeClass("d-none");
+            }
+        });
+    </script>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

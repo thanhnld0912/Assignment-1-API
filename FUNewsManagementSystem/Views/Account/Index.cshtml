@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<h2>All System Accounts</h2>
+<a href="/Account/Create">Create New</a>
+<table class="table" id="account-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Action</th> <!-- You missed this header before -->
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Rows will be populated by JavaScript -->
+    </tbody>
+</table>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "https://localhost:7054/odata/Accounts", // ✅ đúng route OData
+                method: "GET",
+                success: function (response) {
+                    const accounts = response.value; // ✅ lấy từ 'value'
+                    const tableBody = $("#account-table tbody");
+
+        accounts.forEach(function (account) {
+            const row = `
+                <tr>
+                    <td>${account.AccountId}</td>
+                    <td>${account.AccountName}</td>
+                    <td>${account.AccountEmail}</td>
+                    <td>${account.AccountRole}</td>
+                    <td>
+                        <a href="/Account/Update?id=${account.AccountId}">Update</a> |
+                        <a href="/Account/Delete?id=${account.AccountId}">Delete</a>
+                    </td>
+                </tr>`;
+            tableBody.append(row);
+        });
+
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX error:", error);
+                }
+            });
+        });
+    </script>
+
+}

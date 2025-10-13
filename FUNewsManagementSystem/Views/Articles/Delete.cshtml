@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Delete News Article";
+    var articleId = Context.Request.Query["id"];
+}
+
+<h2>Delete News Article</h2>
+<p>Are you sure you want to delete article ID: <strong>@articleId</strong>?</p>
+
+<form id="delete-article-form">
+    <input type="hidden" id="newsArticleId" value="@articleId" />
+    <button type="submit">Delete</button>
+    <a href="/Article/Index">Cancel</a>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#delete-article-form").on("submit", function (e) {
+            e.preventDefault();
+            const articleId = $("#newsArticleId").val();
+            const jwt = localStorage.getItem("jwtToken");
+
+            $.ajax({
+                url: `https://localhost:7054/odata/Articles('${articleId}')`,
+                type: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                },
+                success: function () {
+                    alert("Article deleted successfully.");
+                    window.location.href = "/Articles/Index";
+                },
+                error: function (xhr) {
+                    alert("Delete failed: " + xhr.responseText);
+                }
+            });
+        });
+    </script>
+}

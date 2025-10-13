@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Login</h2>
+
+<div>
+    <input type="email" id="email" placeholder="Email" />
+</div>
+<div>
+    <input type="password" id="password" placeholder="Password" />
+</div>
+<div>
+    <button id="loginBtn">Login</button>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#loginBtn").click(function () {
+            $.ajax({
+                url: "https://localhost:7122/api/Auth/Login", // hoặc /odata/Accounts/Login nếu dùng OData
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    email: $("#email").val(),
+                    password: $("#password").val()
+                }),
+                success: function (token) {
+                    // ✅ Store token in localStorage (or sessionStorage)
+                    localStorage.setItem("jwtToken", token);
+
+                    // ✅ Redirect if token is present
+                    window.location.href = "/Home/Privacy";
+                },
+                error: function (xhr) {
+                    alert("Login failed: " + xhr.responseText);
+                }
+            });
+        });
+    </script>
+}

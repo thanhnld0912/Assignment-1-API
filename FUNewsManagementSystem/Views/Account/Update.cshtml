@@ -1,0 +1,55 @@
+﻿@{
+    var id = Context.Request.Query["id"];
+}
+
+<h2>Update Account</h2>
+<form id="update-form">
+    <input name="accountId" value="@id" hidden />
+    <input name="accountName" placeholder="Name" required />
+    <input name="accountEmail" type="email" placeholder="Email" required />
+    <input name="accountPassword" type="password" placeholder="Password" required />
+    <select name="accountRole">
+        <option value="1">Staff</option>
+        <option value="2">Lecturer</option>
+    </select>
+    <button type="submit">Update</button>
+</form>
+
+@section Scripts {
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    const id = "@id";
+
+    $(document).ready(function() {
+        $.get(`https://localhost:7054/odata/Accounts(${id})`, function (acc) {
+            $("input[name=accountName]").val(acc.accountName);
+            $("input[name=accountEmail]").val(acc.accountEmail);
+            $("input[name=accountPassword]").val(acc.accountPassword);
+            $("select[name=accountRole]").val(acc.accountRole);
+        });
+
+        $("#update-form").on("submit", function (e) {
+            e.preventDefault();
+            const data = {
+                accountId: parseInt(id),
+                accountName: $("input[name=accountName]").val(),
+                accountEmail: $("input[name=accountEmail]").val(),
+                accountPassword: $("input[name=accountPassword]").val(),
+                accountRole: parseInt($("select[name=accountRole]").val())
+            };
+            $.ajax({
+                url: `https://localhost:7054/odata/Accounts(${id})`, // 👈 fix route
+                type: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function () {
+                    window.location.href = "/Account/Index";
+                },
+                error: function() {
+                    alert("Fail to update account.");
+                }
+            });
+        });
+    });
+</script>
+}

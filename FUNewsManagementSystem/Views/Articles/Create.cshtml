@@ -1,0 +1,130 @@
+﻿@{
+    ViewData["Title"] = "Create News Article";
+}
+
+<h2>Create News Article</h2>
+
+<form id="create-article-form">
+    <div>
+        <label>Article ID</label>
+        <input name="newsArticleId" required />
+
+    </div>
+    <div>
+        <label>Title</label>
+        <input name="newsTitle" required />
+    </div>
+    <div>
+        <label>Headline</label>
+        <input name="headline" required />
+    </div>
+    <div>
+        <label>Content</label>
+        <textarea name="newsContent"></textarea>
+    </div>
+    <div>
+        <label>Source</label>
+        <input name="newsSource" />
+    </div>
+    <div>
+        <label>Category</label>
+        <select name="categoryId" id="category-select" required></select>
+    </div>
+    <div>
+        <label>Status</label>
+        <select name="newsStatus">
+            <option value="true">Published</option>
+            <option value="false">Draft</option>
+        </select>
+    </div>
+    <div>
+        <label>Tags</label>
+        <div id="tag-checkboxes"></div>
+    </div>
+
+    <button type="submit">Create</button>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.get("https://localhost:7054/odata/Categories", function (res) {
+                res.value.forEach(cat => {
+                           $("#category-select").append(
+            `<option value="${cat.CategoryId}">${cat.CategoryName}</option>`
+        );
+                });
+            });
+
+            $.get("https://localhost:7054/odata/Tags", function (res) {
+                res.value.forEach(tag => {
+                          $("#tag-checkboxes").append(`
+            <label>
+                <input type="checkbox" name="tagIds" value="${tag.TagId}" />
+                ${tag.TagName}
+            </label><br/>
+        `);
+                });
+            });
+
+                  $("#create-article-form").on("submit", function (e) {
+            e.preventDefault();
+
+            const tagIds = $("input[name=tagIds]:checked")
+                .map(function () { return parseInt($(this).val()); })
+                .get();
+
+            const articleDto = {
+                newsArticleId: $("input[name=newsArticleId]").val(),
+                newsTitle: $("input[name=newsTitle]").val(),
+                headline: $("input[name=headline]").val(),
+                newsContent: $("textarea[name=newsContent]").val(),
+                newsSource: $("input[name=newsSource]").val(),
+                categoryId: parseInt($("#category-select").val()),
+                newsStatus: $("select[name=newsStatus]").val() === "true"
+            };
+
+            const jwt = localStorage.getItem("jwtToken");
+
+            $.ajax({
+                url: "https://localhost:7054/odata/Articles",
+                type: "POST",
+                contentType: "application/json",
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                },
+                data: JSON.stringify(articleDto),
+                success: function () {
+                    // 🔁 Step 2: Assign tags after article created
+                    if (tagIds.length > 0) {
+                        $.ajax({
+                            url: `https://localhost:7054/odata/Tags/AddTags?articleId=${articleDto.newsArticleId}`,
+                            type: "POST",
+                            contentType: "application/json",
+                            headers: {
+                                Authorization: `Bearer ${jwt}`
+                            },
+                            data: JSON.stringify(tagIds),
+                            success: function () {
+                                alert("Article created with tags!");
+                                window.location.href = "/Article/Index";
+                            },
+                            error: function (xhr) {
+                                alert("Article created, but failed to assign tags: " + xhr.responseText);
+                            }
+                        });
+                    } else {
+                        alert("Article created without tags.");
+                        window.location.href = "/Articles/Index";
+                    }
+                },
+                error: function (xhr) {
+                    alert("Error creating article: " + xhr.responseText);
+                }
+            });
+        });
+
+        });
+    </script>
+}

@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Categories";
+}
+
+<h2>All Categories</h2>
+<a href="/Category/Create">Create New</a>
+
+<table class="table" id="category-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Parent</th>
+            <th>Active</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+              $(document).ready(function () {
+            $.ajax({
+                url: "https://localhost:7122/odata/Categories",
+                method: "GET",
+                success: function (response) {
+                    const categories = response.value;
+                    const tableBody = $("#category-table tbody");
+                    tableBody.empty();
+
+                    categories.forEach(function (category) {
+                        const row = `
+                            <tr>
+                                <td>${category.CategoryId}</td>
+                                <td>${category.CategoryName}</td>
+                                <td>${category.CategoryDesciption}</td>
+                                <td>${category.ParentCategoryId ?? '-'}</td>
+                                <td>${category.IsActive ? '✅' : '❌'}</td>
+                                <td>
+                                    <a href="/Category/Update?id=${category.CategoryId}">Update</a> |
+                                    <a href="/Category/Delete?id=${category.CategoryId}">Delete</a>
+                                </td>
+                            </tr>`;
+                        tableBody.append(row);
+                    });
+                },
+                error: function () {
+                    alert("Failed to fetch categories.");
+                }
+            });
+        });
+
+    </script>
+}

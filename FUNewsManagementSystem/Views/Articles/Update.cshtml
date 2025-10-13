@@ -1,0 +1,174 @@
+﻿@{
+    ViewData["Title"] = "Update News Article";
+    var articleId = Context.Request.Query["id"];
+}
+
+<h2>Update News Article</h2>
+
+<form id="update-article-form">
+    <input type="hidden" name="newsArticleId" value="@articleId" />
+
+    <div>
+        <label>Title</label>
+        <input name="newsTitle" required />
+    </div>
+    <div>
+        <label>Headline</label>
+        <input name="headline" required />
+    </div>
+    <div>
+        <label>Content</label>
+        <textarea name="newsContent"></textarea>
+    </div>
+    <div>
+        <label>Source</label>
+        <input name="newsSource" />
+    </div>
+    <div>
+        <label>Category</label>
+        <select name="categoryId" id="category-select" required></select>
+    </div>
+    <div>
+        <label>Status</label>
+        <select name="newsStatus">
+            <option value="true">Published</option>
+            <option value="false">Draft</option>
+        </select>
+    </div>
+    <div>
+        <label>Tags</label>
+        <div id="tag-checkboxes"></div>
+    </div>
+
+    <button type="submit">Update</button>
+</form>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const articleId = "@articleId";
+          function parseJwt(token) {
+            try {
+                return JSON.parse(atob(token.split('.')[1]));
+            } catch (e) {
+                return null;
+            }
+        }
+        $(document).ready(function () {
+            // Load article with Tags + all tags
+                   $.when(
+            $.ajax({
+                url: `https://localhost:7054/odata/Articles('${articleId}')?$expand=Tags`,
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("jwtToken")}`
+                }
+            }),
+            $.ajax({
+                url: "https://localhost:7054/odata/Tags",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("jwtToken")}`
+                }
+            }),
+            $.ajax({
+                url: "https://localhost:7054/odata/Categories",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("jwtToken")}`
+                }
+            })
+        )
+        .done(function (articleRes, allTagsRes, categoriesRes) {
+                const article = articleRes[0];
+                const allTags = allTagsRes[0];
+                const categories = categoriesRes[0].value;
+                // Prefill article fields
+                $("input[name=newsTitle]").val(article.NewsTitle);
+                $("input[name=headline]").val(article.Headline);
+                $("textarea[name=newsContent]").val(article.NewsContent);
+                $("input[name=newsSource]").val(article.NewsSource);
+                $("select[name=newsStatus]").val(article.NewsStatus.toString());
+
+                // Populate category select
+                categories.forEach(cat => {
+                    const selected = cat.CategoryId === article.CategoryId ? "selected" : "";
+                    $("#category-select").append(`<option value="${cat.CategoryId}" ${selected}>${cat.CategoryName}</option>`);
+                });
+
+                            const selectedTagIds = Array.isArray(article.Tags) ? article.Tags.map(t => t.TagId) : [];
+
+        console.log("Article with Tags:", article);
+        console.log("All Tags:", allTags);
+
+        if (!Array.isArray(allTags)) {
+            console.error("Unexpected tags structure:", allTags);
+        } else {
+            allTags.forEach(tag => {
+                const isChecked = selectedTagIds.includes(tag.tagId) ? "checked" : "";
+                $("#tag-checkboxes").append(`
+                    <label>
+                        <input type="checkbox" name="tagIds" value="${tag.tagId}" ${isChecked} />
+                        ${tag.tagName}
+                    </label><br/>
+                `);
+            });
+        }
+
+
+
+            });
+
+              // Submit form
+        $("#update-article-form").on("submit", function (e) {
+            e.preventDefault();
+
+            const jwt = localStorage.getItem("jwtToken");
+            const tagIds = $("input[name=tagIds]:checked").map(function () {
+                return parseInt($(this).val());
+            }).get();
+
+            const articleDto = {
+                newsArticleId: articleId,
+                newsTitle: $("input[name=newsTitle]").val(),
+                headline: $("input[name=headline]").val(),
+                newsContent: $("textarea[name=newsContent]").val(),
+                newsSource: $("input[name=newsSource]").val(),
+                categoryId: parseInt($("#category-select").val()),
+                newsStatus: $("select[name=newsStatus]").val() === "true"
+            };
+
+            // Step 1: Update article info
+            $.ajax({
+                url: `https://localhost:7054/odata/Articles('${articleId}')`,
+                type: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify(articleDto),
+                headers: {
+                    Authorization: `Bearer ${jwt}`
+                },
+                success: function () {
+                    // Step 2: Sync tags (✅ new endpoint)
+                    $.ajax({
+                        url: `https://localhost:7054/odata/Tags/SyncArticleTags?articleId=${articleId}`,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(tagIds),
+                        headers: {
+                            Authorization: `Bearer ${jwt}`
+                        },
+                        success: function () {
+                            alert("Article and tags updated.");
+                            window.location.href = "/Articles/Index";
+                        },
+                        error: function (xhr) {
+                            alert("Article updated but failed to sync tags: " + xhr.responseText);
+                        }
+                    });
+                },
+                error: function (xhr) {
+                    alert("Update failed: " + xhr.responseText);
+                }
+            });
+        });
+
+        });
+    </script>
+}

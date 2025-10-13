@@ -1,0 +1,15 @@
+E:\FPT\PRN232\Assignment1\Repositories\bin\Debug\net8.0\Repositories.deps.json
+E:\FPT\PRN232\Assignment1\Repositories\bin\Debug\net8.0\Repositories.dll
+E:\FPT\PRN232\Assignment1\Repositories\bin\Debug\net8.0\Repositories.pdb
+E:\FPT\PRN232\Assignment1\Repositories\bin\Debug\net8.0\Models.dll
+E:\FPT\PRN232\Assignment1\Repositories\bin\Debug\net8.0\Models.pdb
+E:\FPT\PRN232\Assignment1\Repositories\obj\Debug\net8.0\Repositories.csproj.AssemblyReference.cache
+E:\FPT\PRN232\Assignment1\Repositories\obj\Debug\net8.0\Repositories.GeneratedMSBuildEditorConfig.editorconfig
+E:\FPT\PRN232\Assignment1\Repositories\obj\Debug\net8.0\Repositories.AssemblyInfoInputs.cache
+E:\FPT\PRN232\Assignment1\Repositories\obj\Debug\net8.0\Repositories.AssemblyInfo.cs
+E:\FPT\PRN232\Assignment1\Repositories\obj\Debug\net8.0\Repositories.csproj.CoreCompileInputs.cache
+E:\FPT\PRN232\Assignment1\Repositories\obj\Debug\net8.0\Reposito.787EC4B2.Up2Date
+E:\FPT\PRN232\Assignment1\Repositories\obj\Debug\net8.0\Repositories.dll
+E:\FPT\PRN232\Assignment1\Repositories\obj\Debug\net8.0\refint\Repositories.dll
+E:\FPT\PRN232\Assignment1\Repositories\obj\Debug\net8.0\Repositories.pdb
+E:\FPT\PRN232\Assignment1\Repositories\obj\Debug\net8.0\ref\Repositories.dll

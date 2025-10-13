@@ -1,0 +1,26 @@
+﻿@{
+    var id = Context.Request.Query["id"];
+}
+
+<h2>Delete Account</h2>
+<p>Are you sure you want to delete account ID: @id?</p>
+<button id="delete-btn">Delete</button>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const id = "@id";
+        $("#delete-btn").on("click", function () {
+            $.ajax({
+                url: `https://localhost:7054/odata/Accounts(${id})`, // 👈 fix route
+                type: "DELETE",
+                success: function () {
+                    window.location.href = "/Account/Index";
+                },
+                error: function () {
+                    alert("Failed to delete account.");
+                }
+            });
+        });
+    </script>
+}

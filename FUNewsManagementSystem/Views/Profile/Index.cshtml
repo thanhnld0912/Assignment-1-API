@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "My Profile";
+   
+}
+
+<h2>My Profile</h2>
+
+<form id="profile-form">
+    <label>Name</label>
+    <input id="accountName" />
+    <label>Email</label>
+    <input id="accountEmail"  />
+    <button type="submit">Update</button>
+</form>
+
+<h3>My Articles</h3>
+<ul id="my-articles"></ul>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const jwt = localStorage.getItem("jwtToken");
+
+        function parseJwt(token) {
+            const payload = token.split('.')[1];
+            return JSON.parse(atob(payload));
+        }
+
+        $(document).ready(function () {
+            const claims = parseJwt(jwt);
+            const userId = claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+
+            // ✅ Step 1: Load profile using OData
+            $.ajax({
+                url: `https://localhost:7121/odata/Accounts(${userId})`,
+                method: "GET",
+                headers: { Authorization: "Bearer " + jwt },
+                success: function (odataUser) {
+                    $("#accountName").val(odataUser.accountName);
+                    $("#accountEmail").val(odataUser.accountEmail);
+                },
+                error: xhr => alert("Failed to load profile: " + xhr.responseText)
+            });
+
+            // ✅ Step 2: Load articles
+            $.ajax({
+                url: "https://localhost:7122/user/GetMyArticles",
+                method: "GET",
+                headers: { Authorization: "Bearer " + jwt },
+                success: function (res) {
+                    res.forEach(article => {
+                        $("#my-articles").append(`
+                            <li>
+                                ${article.newsTitle} - ${article.modifiedDate}
+                                <a href="/Articles/Update?id=${article.newsArticleId}">✏️ Update</a> |
+                                <a href="/Articles/Delete?id=${article.newsArticleId}">🗑️ Delete</a>
+                            </li>
+                        `);
+                    });
+                }
+            });
+
+            // ✅ Step 3: Update profile
+            $("#profile-form").on("submit", function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                      url: "https://localhost:7122/user/update-profile",
+        method: "PUT",
+                    contentType: "application/json",
+                    headers: { Authorization: "Bearer " + jwt },
+                    data: JSON.stringify({
+                        accountId: parseInt(userId),
+                        accountName: $("#accountName").val(),
+                        accountEmail: $("#accountEmail").val()
+                    }),
+                    success: () => alert("Profile updated."),
+                    error: xhr => alert("Error updating: " + xhr.responseText)
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,28 @@
+﻿@{
+    var id = Context.Request.Query["id"];
+    ViewData["Title"] = "Delete Category";
+}
+
+<h2>Delete Category</h2>
+<p>Are you sure you want to delete category ID: @id?</p>
+<button id="delete-btn" class="btn btn-danger">Delete</button>
+<a href="/Category/Index" class="btn btn-secondary">Cancel</a>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#delete-btn").on("click", function () {
+            $.ajax({
+                url: `https://localhost:7054/odata/Categories(@id)`.replace("@id", @id),
+                type: "DELETE",
+                success: function () {
+                    alert("Category deleted successfully.");
+                    window.location.href = "/Category/Index";
+                },
+                error: function (xhr) {
+                    alert("Delete failed: " + xhr.responseText);
+                }
+            });
+        });
+    </script>
+}

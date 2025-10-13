@@ -1,0 +1,39 @@
+﻿<h2>Create Account</h2>
+<form id="create-form">
+   @*  <input name="accountId" placeholder="Account ID" required /> *@
+    <input name="accountName" placeholder="Name" required />
+    <input name="accountEmail" type="email" placeholder="Email" required />
+    <input name="accountPassword" type="password" placeholder="Password" required />
+    <select name="accountRole">
+        <option value="1">Staff</option>
+        <option value="2">Lecturer</option>
+    </select>
+    <button type="submit">Create</button>
+</form>
+<!-- Thêm dòng này trước mọi đoạn dùng jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+      $("#create-form").on("submit", function (e) {
+          e.preventDefault();
+            const data = {
+            // AccountId: $("input[name=accountId]").val(),
+            AccountName: $("input[name=accountName]").val(),
+            AccountEmail: $("input[name=accountEmail]").val(),
+            AccountPassword: $("input[name=accountPassword]").val(),
+            AccountRole: parseInt($("select[name=accountRole]").val())
+        };
+       $.ajax({
+            url: "https://localhost:7054/odata/Accounts", // ✅ đúng OData POST route
+            method: "POST",                                // ✅ POST để tạo mới
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                alert("Account created successfully!");
+                window.location.href = "/Account/Index";
+            },
+            error: function (xhr) {
+                alert("Failed to create account: " + xhr.responseText);
+            }
+        });
+    });
+</script>
