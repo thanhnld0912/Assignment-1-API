@@ -23,7 +23,7 @@
             AccountRole: parseInt($("select[name=accountRole]").val())
         };
        $.ajax({
-            url: "https://localhost:7054/odata/Accounts", // ✅ đúng OData POST route
+            url: "https://localhost:7123/odata/Accounts", // ✅ đúng OData POST route
             method: "POST",                                // ✅ POST để tạo mới
             contentType: "application/json",
             data: JSON.stringify(data),

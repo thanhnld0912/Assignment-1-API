@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Models.Models;
 using Services;
+
 namespace API_ass1.Controllers
 {
-    //[Authorize(Roles = "admin")]
-    [Route("odata/[controller]")]
     public class AccountsController : ODataController
     {
         private readonly AccountService _accountService;
@@ -22,27 +21,29 @@ namespace API_ass1.Controllers
             _mapper = mapper;
         }
 
-
-
+        // ✅ GET /odata/Accounts
         [EnableQuery]
+        [HttpGet] // cần để Swagger biết HTTP method
         public async Task<IActionResult> Get()
         {
             var accounts = await _accountService.GetSystemAccounts();
             return Ok(accounts);
         }
 
-        // GET /odata/Accounts(1)
+        // ✅ GET /odata/Accounts(1)
         [EnableQuery]
+        [HttpGet("{key}")]
         public async Task<IActionResult> Get([FromODataUri] short key)
         {
             var acc = await _accountService.GetAccountById(key);
-            return acc == null ? NotFound() : Ok(acc);
+            if (acc == null)
+                return NotFound();
+
+            return Ok(acc);
         }
 
-
-
-
-        // POST /odata/Accounts
+        // ✅ POST /odata/Accounts
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] SystemAccount newAccount)
         {
             if (!ModelState.IsValid)
@@ -51,6 +52,9 @@ namespace API_ass1.Controllers
             await _accountService.CreateAccount(newAccount);
             return Created(newAccount);
         }
+
+        // ✅ PUT /odata/Accounts(1)
+        [HttpPut("{key}")]
         public async Task<IActionResult> Put([FromODataUri] short key, [FromBody] SystemAccount updatedAccount)
         {
             if (key != updatedAccount.AccountId)
@@ -64,7 +68,8 @@ namespace API_ass1.Controllers
             return Updated(updatedAccount);
         }
 
-        // DELETE /odata/Accounts(1)
+        // ✅ DELETE /odata/Accounts(1)
+        [HttpDelete("{key}")]
         public async Task<IActionResult> Delete([FromODataUri] short key)
         {
             var existing = await _accountService.GetAccountById(key);
@@ -74,6 +79,5 @@ namespace API_ass1.Controllers
             await _accountService.DeleteAccount(existing);
             return NoContent();
         }
-
     }
 }

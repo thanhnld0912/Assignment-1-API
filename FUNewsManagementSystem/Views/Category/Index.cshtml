@@ -24,34 +24,36 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
               $(document).ready(function () {
-            $.ajax({
-                url: "https://localhost:7122/odata/Categories",
-                method: "GET",
-                success: function (response) {
-                    const categories = response.value;
-                    const tableBody = $("#category-table tbody");
-                    tableBody.empty();
+                   $.ajax({
+            url: "https://localhost:7123/odata/Categories",
+            method: "GET",
+            success: function (response) {
+                console.log("Response:", response); // để debug
+                const categories = Array.isArray(response) ? response : response.value; // ✅ fix
+                const tableBody = $("#category-table tbody");
+                tableBody.empty();
 
-                    categories.forEach(function (category) {
-                        const row = `
-                            <tr>
-                                <td>${category.CategoryId}</td>
-                                <td>${category.CategoryName}</td>
-                                <td>${category.CategoryDesciption}</td>
-                                <td>${category.ParentCategoryId ?? '-'}</td>
-                                <td>${category.IsActive ? '✅' : '❌'}</td>
-                                <td>
-                                    <a href="/Category/Update?id=${category.CategoryId}">Update</a> |
-                                    <a href="/Category/Delete?id=${category.CategoryId}">Delete</a>
-                                </td>
-                            </tr>`;
-                        tableBody.append(row);
-                    });
-                },
-                error: function () {
-                    alert("Failed to fetch categories.");
-                }
-            });
+                categories.forEach(function (category) {
+                    const row = `
+                        <tr>
+                            <td>${category.categoryId}</td>
+                            <td>${category.categoryName}</td>
+                            <td>${category.categoryDesciption}</td>
+                            <td>${category.parentCategoryId ?? '-'}</td>
+                            <td>${category.isActive ? '✅' : '❌'}</td>
+                            <td>
+                                <a href="/Category/Update?id=${category.categoryId}">Update</a> |
+                                <a href="/Category/Delete?id=${category.categoryId}">Delete</a>
+                            </td>
+                        </tr>`;
+                    tableBody.append(row);
+                });
+            },
+            error: function () {
+                alert("Failed to fetch categories.");
+            }
+        });
+
         });
 
     </script>

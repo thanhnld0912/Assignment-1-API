@@ -8,7 +8,7 @@ using Services;
 namespace API_ass1.Controllers
 {
     //[Authorize(Roles = "staff")]
-    [Microsoft.AspNetCore.Mvc.Route("odata/[controller]")]
+    [Route("odata/[controller]")]
     public class CategoriesController : ODataController
     {
         private readonly CategoryService _cateService;
@@ -17,20 +17,27 @@ namespace API_ass1.Controllers
         {
             _cateService = cateService;
         }
+
+        // ✅ GET /odata/Categories
         [EnableQuery]
-        public async Task<IActionResult> Get()
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
             var categories = await _cateService.GetCategories();
             return Ok(categories);
         }
 
+        // ✅ GET /odata/Categories/{key}
         [EnableQuery]
-        public async Task<IActionResult> Get([FromODataUri] short key)
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetById([FromODataUri] short key)
         {
             var cate = await _cateService.GetCategoryById(key);
             return cate == null ? NotFound() : Ok(cate);
         }
 
+        // ✅ POST /odata/Categories
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] Category newCategory)
         {
             if (!ModelState.IsValid)
@@ -39,24 +46,28 @@ namespace API_ass1.Controllers
             await _cateService.AddCategory(newCategory);
             return Created(newCategory);
         }
+
+        // ✅ PUT /odata/Categories/{key}
+        [HttpPut("{key}")]
+        public async Task<IActionResult> Put([FromODataUri] short key, [FromBody] Category model)
+        {
+            if (key != model.CategoryId)
+                return BadRequest("Mismatched category ID");
+
+            await _cateService.UpdateCategory(model);
+            return Updated(model);
+        }
+
+        // ✅ DELETE /odata/Categories/{key}
         [HttpDelete("{key}")]
         public async Task<IActionResult> Delete([FromODataUri] short key)
         {
             var cate = await _cateService.GetCategoryById(key);
             if (cate == null)
                 return NotFound();
+
             await _cateService.DeleteCategory(cate);
             return NoContent();
         }
-        [HttpPut("{key}")]
-        public async Task<IActionResult> Put([FromODataUri] short key, [FromBody] Category model)
-        {
-            if (key != model.CategoryId)
-                return BadRequest();
-
-            await _cateService.UpdateCategory(model);
-            return Updated(model);
-        }
-
     }
 }

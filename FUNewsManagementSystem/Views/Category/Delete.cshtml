@@ -13,7 +13,7 @@
     <script>
         $("#delete-btn").on("click", function () {
             $.ajax({
-                url: `https://localhost:7054/odata/Categories(@id)`.replace("@id", @id),
+                url: `https://localhost:7123/odata/Categories(@id)`.replace("@id", @id),
                 type: "DELETE",
                 success: function () {
                     alert("Category deleted successfully.");

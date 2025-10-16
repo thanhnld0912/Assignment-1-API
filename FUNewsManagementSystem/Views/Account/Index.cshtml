@@ -22,7 +22,7 @@
     <script>
         $(document).ready(function () {
             $.ajax({
-                url: "https://localhost:7054/odata/Accounts", // ✅ đúng route OData
+                url: "https://localhost:7123/odata/Accounts", // ✅ đúng route OData
                 method: "GET",
                 success: function (response) {
                     const accounts = response.value; // ✅ lấy từ 'value'

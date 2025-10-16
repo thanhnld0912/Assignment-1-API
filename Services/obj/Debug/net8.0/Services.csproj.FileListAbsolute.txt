@@ -15,3 +15,4 @@ E:\FPT\PRN232\Assignment1\Services\obj\Debug\net8.0\Services.dll
 E:\FPT\PRN232\Assignment1\Services\obj\Debug\net8.0\refint\Services.dll
 E:\FPT\PRN232\Assignment1\Services\obj\Debug\net8.0\Services.pdb
 E:\FPT\PRN232\Assignment1\Services\obj\Debug\net8.0\ref\Services.dll
+E:\FPT\PRN232\Assignment1\Services\obj\Debug\net8.0\Services.sourcelink.json

@@ -100,3 +100,4 @@ E:\FPT\PRN232\Assignment1\API_ass1\bin\Debug\net8.0\Microsoft.AspNetCore.Authent
 E:\FPT\PRN232\Assignment1\API_ass1\bin\Debug\net8.0\Microsoft.AspNetCore.OData.dll
 E:\FPT\PRN232\Assignment1\API_ass1\bin\Debug\net8.0\Microsoft.OData.ModelBuilder.dll
 E:\FPT\PRN232\Assignment1\API_ass1\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\FPT\PRN232\Assignment1\API_ass1\obj\Debug\net8.0\API_ass1.sourcelink.json

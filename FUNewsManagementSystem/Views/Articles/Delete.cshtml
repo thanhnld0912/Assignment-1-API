@@ -21,7 +21,7 @@
             const jwt = localStorage.getItem("jwtToken");
 
             $.ajax({
-                url: `https://localhost:7054/odata/Articles('${articleId}')`,
+                url: `https://localhost:7123/odata/Articles('${articleId}')`,
                 type: "DELETE",
                 headers: {
                     Authorization: `Bearer ${jwt}`

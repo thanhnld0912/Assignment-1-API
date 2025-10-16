@@ -23,5 +23,6 @@ namespace Services
         public Task<IEnumerable<NewsArticle>> SearchAricles(string NewsTitle) => _articleRepo.SearchArticles(NewsTitle);
 
         public Task UpdateArticle(NewsArticle article) => _articleRepo.Update(article);
+
     }
 }

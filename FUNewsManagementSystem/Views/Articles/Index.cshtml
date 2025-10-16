@@ -96,43 +96,54 @@
         }
 
 
-
         function loadArticles() {
             const jwt = localStorage.getItem("jwtToken");
             const query = buildODataQuery();
 
             $.ajax({
-                url: `https://localhost:7121/odata/Articles${query}`,
+                url: `https://localhost:7123/odata/Articles/list${query}`, // <-- /list ở đây
                 type: "GET",
                 headers: {
                     Authorization: `Bearer ${jwt}`
                 },
-                success: function (response) {
-                    const tableBody = $("#articles-table tbody").empty();
-                    response.value.forEach(article => {
-                        const tags = (article.Tags ?? []).map(tag => tag.TagName).join(", ");
-                        tableBody.append(`
-                            <tr>
-                                <td>${article.NewsArticleId}</td>
-                                <td>${article.NewsTitle ?? "-"}</td>
-                                <td>${article.Headline ?? "-"}</td>
-                                <td>${article.CreatedDate ? new Date(article.CreatedDate).toLocaleDateString() : "-"}</td>
-                                <td>${article.NewsSource ?? "-"}</td>
-                                <td>${article.NewsStatus ? "✅" : "❌"}</td>
-                               <td>${article.Category?.CategoryName ?? "-"}</td>
-                                <td>${tags || "-"}</td>
-                                <td>
-                                    <a href="/Articles/Update?id=${article.NewsArticleId}">✏️ Update</a> |
-                                    <a href="/Articles/Delete?id=${article.NewsArticleId}">🗑️ Delete</a>
-                                </td>
-                            </tr>`);
-                    });
-                },
+        success: function (response) {
+            const tableBody = $("#articles-table tbody").empty();
+
+            // Nếu trả về mảng trực tiếp
+            const articles = Array.isArray(response.value) ? response.value : response;
+
+            if (!Array.isArray(articles)) {
+                console.error("Invalid article response:", response);
+                return;
+            }
+
+            articles.forEach(article => {
+                const tags = (article.Tags ?? []).map(tag => tag.TagName).join(", ");
+                tableBody.append(`
+                    <tr>
+                        <td>${article.NewsArticleId}</td>
+                        <td>${article.NewsTitle ?? "-"}</td>
+                        <td>${article.Headline ?? "-"}</td>
+                        <td>${article.CreatedDate ? new Date(article.CreatedDate).toLocaleDateString() : "-"}</td>
+                        <td>${article.NewsSource ?? "-"}</td>
+                        <td>${article.NewsStatus ? "✅" : "❌"}</td>
+                        <td>${article.Category?.CategoryName ?? "-"}</td>
+                        <td>${tags || "-"}</td>
+                        <td>
+                            <a href="/Articles/Update?id=${article.NewsArticleId}">✏️ Update</a> |
+                            <a href="/Articles/Delete?id=${article.NewsArticleId}">🗑️ Delete</a>
+                        </td>
+                    </tr>
+                `);
+            });
+        },
                 error: function (xhr) {
                     console.error("Failed to fetch articles:", xhr);
                 }
             });
         }
+
+
 
         $(document).ready(function () {
             const jwt = localStorage.getItem("jwtToken");
@@ -142,13 +153,13 @@
             }
 
             // Populate dropdowns
-            $.get("https://localhost:7121/odata/Categories", function (res) {
+            $.get("https://localhost:7123/odata/Categories", function (res) {
                 res.value.forEach(c => {
                     $("#filterCategory").append(`<option value="${c.CategoryId}">${c.CategoryName}</option>`);
                 });
             });
 
-                     $.get("https://localhost:7121/odata/Tags", function (res) {
+                     $.get("https://localhost:7123/odata/Tags", function (res) {
                    if (Array.isArray(res)) {
             res.forEach(t => {
                 $("#filterTags").append(`

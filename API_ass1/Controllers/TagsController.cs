@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Services;
@@ -7,7 +8,7 @@ using Services;
 namespace API_ass1.Controllers
 {
     //[Authorize(Roles = "staff")]
-    [Microsoft.AspNetCore.Mvc.Route("odata/[controller]")]
+    [Route("odata/[controller]")]
     public class TagsController : ODataController
     {
         private readonly TagService _tagService;
@@ -16,13 +17,26 @@ namespace API_ass1.Controllers
         {
             _tagService = tagService;
         }
+
+        // ✅ GET /odata/Tags
         [EnableQuery]
-        public async Task<IActionResult> Get()
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
             var tags = await _tagService.GetTags();
             return Ok(tags);
         }
 
+        // ✅ GET /odata/Tags/{key}
+        [EnableQuery]
+        [HttpGet("{key}")]
+        public async Task<IActionResult> GetById([FromODataUri] int key)
+        {
+            var tag = await _tagService.GetTagById(key);
+            return tag == null ? NotFound() : Ok(tag);
+        }
+
+        // ✅ POST /odata/Tags/AddTags
         [HttpPost("AddTags")]
         [Authorize]
         public async Task<IActionResult> AddTagsToArticle([FromQuery] string articleId, [FromBody] List<int> tagIds)
@@ -37,9 +51,11 @@ namespace API_ass1.Controllers
 
             return Ok("Tags added successfully.");
         }
+
+        // ✅ POST /odata/Tags/SyncArticleTags
         [HttpPost("SyncArticleTags")]
         [Authorize]
-        public async Task<IActionResult> SyncTags(string articleId, [FromBody] List<int> tagIds)
+        public async Task<IActionResult> SyncTags([FromQuery] string articleId, [FromBody] List<int> tagIds)
         {
             if (string.IsNullOrWhiteSpace(articleId))
                 return BadRequest("Missing article ID");
@@ -62,6 +78,5 @@ namespace API_ass1.Controllers
 
             return Ok("Tags synchronized.");
         }
-
     }
 }

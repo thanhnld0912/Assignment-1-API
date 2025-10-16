@@ -32,7 +32,7 @@
 
             // ✅ Step 1: Load profile using OData
             $.ajax({
-                url: `https://localhost:7121/odata/Accounts(${userId})`,
+                url: `https://localhost:7123/odata/Accounts(${userId})`,
                 method: "GET",
                 headers: { Authorization: "Bearer " + jwt },
                 success: function (odataUser) {
@@ -44,7 +44,7 @@
 
             // ✅ Step 2: Load articles
             $.ajax({
-                url: "https://localhost:7122/user/GetMyArticles",
+                url: "https://localhost:7123/user/GetMyArticles",
                 method: "GET",
                 headers: { Authorization: "Bearer " + jwt },
                 success: function (res) {
@@ -65,7 +65,7 @@
                 e.preventDefault();
 
                 $.ajax({
-                      url: "https://localhost:7122/user/update-profile",
+                      url: "https://localhost:7123/user/update-profile",
         method: "PUT",
                     contentType: "application/json",
                     headers: { Authorization: "Bearer " + jwt },

@@ -38,7 +38,7 @@
                 accountRole: parseInt($("select[name=accountRole]").val())
             };
             $.ajax({
-                url: `https://localhost:7054/odata/Accounts(${id})`, // 👈 fix route
+                url: `https://localhost:7123/odata/Accounts(${id})`, // 👈 fix route
                 type: "PUT",
                 contentType: "application/json",
                 data: JSON.stringify(data),

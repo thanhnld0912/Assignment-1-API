@@ -31,3 +31,4 @@ E:\FPT\PRN232\Assignment1\FUNewsManagementSystem\obj\Debug\net8.0\refint\FUNewsM
 E:\FPT\PRN232\Assignment1\FUNewsManagementSystem\obj\Debug\net8.0\FUNewsManagementSystem.pdb
 E:\FPT\PRN232\Assignment1\FUNewsManagementSystem\obj\Debug\net8.0\FUNewsManagementSystem.genruntimeconfig.cache
 E:\FPT\PRN232\Assignment1\FUNewsManagementSystem\obj\Debug\net8.0\ref\FUNewsManagementSystem.dll
+E:\FPT\PRN232\Assignment1\FUNewsManagementSystem\obj\Debug\net8.0\FUNewsManagementSystem.sourcelink.json

@@ -99,7 +99,7 @@
                     // 🔁 Step 2: Assign tags after article created
                     if (tagIds.length > 0) {
                         $.ajax({
-                            url: `https://localhost:7054/odata/Tags/AddTags?articleId=${articleDto.newsArticleId}`,
+                            url: `https://localhost:7123/odata/Tags/AddTags?articleId=${articleDto.newsArticleId}`,
                             type: "POST",
                             contentType: "application/json",
                             headers: {

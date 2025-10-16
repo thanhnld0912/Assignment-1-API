@@ -19,7 +19,7 @@
     <script>
         $("#loginBtn").click(function () {
             $.ajax({
-                url: "https://localhost:7122/api/Auth/Login", // hoặc /odata/Accounts/Login nếu dùng OData
+                        url: "https://localhost:7123/api/Auth/Login", // hoặc /odata/Accounts/Login nếu dùng OData
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({

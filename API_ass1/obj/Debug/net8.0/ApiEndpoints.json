@@ -1,5 +1,58 @@
 [
   {
+    "ContainingType": "API_ass1.Controllers.AccountsController",
+    "Method": "Get",
+    "RelativePath": "{key}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Int16",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_ass1.Controllers.AccountsController",
+    "Method": "Put",
+    "RelativePath": "{key}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Int16",
+        "IsRequired": false
+      },
+      {
+        "Name": "updatedAccount",
+        "Type": "Models.Models.SystemAccount",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_ass1.Controllers.AccountsController",
+    "Method": "Delete",
+    "RelativePath": "{key}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Int16",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "API_ass1.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/Auth/Login",
@@ -151,54 +204,12 @@
     "ContainingType": "API_ass1.Controllers.AccountsController",
     "Method": "Get",
     "RelativePath": "odata/Accounts",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.AccountsController",
-    "Method": "Get",
-    "RelativePath": "odata/Accounts",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [],
     "EndpointName": "odata/Accounts"
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.AccountsController",
-    "Method": "Get",
-    "RelativePath": "odata/Accounts",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.Int16",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.AccountsController",
-    "Method": "Post",
-    "RelativePath": "odata/Accounts",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "newAccount",
-        "Type": "Models.Models.SystemAccount",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
   },
   {
     "ContainingType": "API_ass1.Controllers.AccountsController",
@@ -216,43 +227,6 @@
     ],
     "ReturnTypes": [],
     "EndpointName": "odata/Accounts"
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.AccountsController",
-    "Method": "Put",
-    "RelativePath": "odata/Accounts",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.Int16",
-        "IsRequired": false
-      },
-      {
-        "Name": "updatedAccount",
-        "Type": "Models.Models.SystemAccount",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.AccountsController",
-    "Method": "Delete",
-    "RelativePath": "odata/Accounts",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.Int16",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
   },
   {
     "ContainingType": "API_ass1.Controllers.AccountsController",
@@ -379,67 +353,9 @@
   },
   {
     "ContainingType": "API_ass1.Controllers.ArticlesController",
-    "Method": "Get",
-    "RelativePath": "odata/Articles",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.ArticlesController",
-    "Method": "Get",
-    "RelativePath": "odata/Articles",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [],
-    "EndpointName": "odata/Articles"
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.ArticlesController",
-    "Method": "Get",
-    "RelativePath": "odata/Articles",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.ArticlesController",
-    "Method": "Put",
-    "RelativePath": "odata/Articles",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "dto",
-        "Type": "Models.DTO.NewsArticleDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.ArticlesController",
     "Method": "Post",
     "RelativePath": "odata/Articles",
-    "HttpMethod": "",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -470,39 +386,6 @@
   },
   {
     "ContainingType": "API_ass1.Controllers.ArticlesController",
-    "Method": "Delete",
-    "RelativePath": "odata/Articles",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.ArticlesController",
-    "Method": "Get",
-    "RelativePath": "odata/Articles({key})",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [],
-    "EndpointName": "odata/Articles({key})"
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.ArticlesController",
     "Method": "Put",
     "RelativePath": "odata/Articles({key})",
     "HttpMethod": "PUT",
@@ -512,7 +395,7 @@
       {
         "Name": "key",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       },
       {
         "Name": "dto",
@@ -534,7 +417,7 @@
       {
         "Name": "key",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [],
@@ -542,7 +425,7 @@
   },
   {
     "ContainingType": "API_ass1.Controllers.ArticlesController",
-    "Method": "Get",
+    "Method": "GetById",
     "RelativePath": "odata/Articles/{key}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -554,8 +437,7 @@
         "IsRequired": false
       }
     ],
-    "ReturnTypes": [],
-    "EndpointName": "odata/Articles/{key}"
+    "ReturnTypes": []
   },
   {
     "ContainingType": "API_ass1.Controllers.ArticlesController",
@@ -568,7 +450,28 @@
       {
         "Name": "key",
         "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "dto",
+        "Type": "Models.DTO.NewsArticleDTO",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_ass1.Controllers.ArticlesController",
+    "Method": "Put",
+    "RelativePath": "odata/Articles/{key}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.String",
+        "IsRequired": false
       },
       {
         "Name": "dto",
@@ -590,7 +493,23 @@
       {
         "Name": "key",
         "Type": "System.String",
-        "IsRequired": true
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_ass1.Controllers.ArticlesController",
+    "Method": "Delete",
+    "RelativePath": "odata/Articles/{key}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [],
@@ -598,20 +517,9 @@
   },
   {
     "ContainingType": "API_ass1.Controllers.ArticlesController",
-    "Method": "Get",
-    "RelativePath": "odata/Articles/$count",
+    "Method": "GetList",
+    "RelativePath": "odata/Articles/list",
     "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [],
-    "EndpointName": "odata/Articles/$count"
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.CategoriesController",
-    "Method": "Get",
-    "RelativePath": "odata/Categories",
-    "HttpMethod": "",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
@@ -619,36 +527,19 @@
   },
   {
     "ContainingType": "API_ass1.Controllers.CategoriesController",
-    "Method": "Get",
+    "Method": "GetAll",
     "RelativePath": "odata/Categories",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": [],
-    "EndpointName": "odata/Categories"
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.CategoriesController",
-    "Method": "Get",
-    "RelativePath": "odata/Categories",
-    "HttpMethod": "",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.Int16",
-        "IsRequired": false
-      }
-    ],
     "ReturnTypes": []
   },
   {
     "ContainingType": "API_ass1.Controllers.CategoriesController",
     "Method": "Post",
     "RelativePath": "odata/Categories",
-    "HttpMethod": "",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -679,40 +570,6 @@
   },
   {
     "ContainingType": "API_ass1.Controllers.CategoriesController",
-    "Method": "Get",
-    "RelativePath": "odata/Categories({key})",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.Int16",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [],
-    "EndpointName": "odata/Categories({key})"
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.CategoriesController",
-    "Method": "Delete",
-    "RelativePath": "odata/Categories({key})",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.Int16",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [],
-    "EndpointName": "odata/Categories({key})"
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.CategoriesController",
     "Method": "Put",
     "RelativePath": "odata/Categories({key})",
     "HttpMethod": "PUT",
@@ -735,7 +592,24 @@
   },
   {
     "ContainingType": "API_ass1.Controllers.CategoriesController",
-    "Method": "Get",
+    "Method": "Delete",
+    "RelativePath": "odata/Categories({key})",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Int16",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [],
+    "EndpointName": "odata/Categories({key})"
+  },
+  {
+    "ContainingType": "API_ass1.Controllers.CategoriesController",
+    "Method": "GetById",
     "RelativePath": "odata/Categories/{key}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -747,41 +621,7 @@
         "IsRequired": false
       }
     ],
-    "ReturnTypes": [],
-    "EndpointName": "odata/Categories/{key}"
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.CategoriesController",
-    "Method": "Delete",
-    "RelativePath": "odata/Categories/{key}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.Int16",
-        "IsRequired": false
-      }
-    ],
     "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API_ass1.Controllers.CategoriesController",
-    "Method": "Delete",
-    "RelativePath": "odata/Categories/{key}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "key",
-        "Type": "System.Int16",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [],
-    "EndpointName": "odata/Categories/{key}"
   },
   {
     "ContainingType": "API_ass1.Controllers.CategoriesController",
@@ -828,23 +668,61 @@
   },
   {
     "ContainingType": "API_ass1.Controllers.CategoriesController",
-    "Method": "Get",
-    "RelativePath": "odata/Categories/$count",
-    "HttpMethod": "GET",
+    "Method": "Delete",
+    "RelativePath": "odata/Categories/{key}",
+    "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Int16",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_ass1.Controllers.CategoriesController",
+    "Method": "Delete",
+    "RelativePath": "odata/Categories/{key}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Int16",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": [],
-    "EndpointName": "odata/Categories/$count"
+    "EndpointName": "odata/Categories/{key}"
   },
   {
     "ContainingType": "API_ass1.Controllers.TagsController",
-    "Method": "Get",
+    "Method": "GetAll",
     "RelativePath": "odata/Tags",
-    "HttpMethod": "",
+    "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API_ass1.Controllers.TagsController",
+    "Method": "GetById",
+    "RelativePath": "odata/Tags/{key}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "key",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {

@@ -31,7 +31,7 @@
     <script>
         $(document).ready(function () {
             // Load parent category options
-            $.get("https://localhost:7054/odata/Categories", function (response) {
+            $.get("https://localhost:7123/odata/Categories", function (response) {
                 const options = response.value;
                 const dropdown = $("#parentCategoryId");
 
@@ -39,7 +39,6 @@
                     dropdown.append(`<option value="${cat.CategoryId}">${cat.CategoryName}</option>`);
                 });
             });
-
             // Form submission
             $("#create-category-form").on("submit", function (e) {
                 e.preventDefault();
@@ -52,7 +51,7 @@
                 };
 
                 $.ajax({
-                    url: "https://localhost:7054/odata/Categories",
+                    url: "https://localhost:7123/odata/Categories",
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify(data),

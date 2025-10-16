@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
@@ -23,33 +21,29 @@ namespace API_ass1
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // EF Core
+            // --- Database
             builder.Services.AddDbContext<FunewsManagementContext>(options =>
-     options.UseSqlServer(builder.Configuration.GetConnectionString("FUNewsManagement")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("FUNewsManagement")));
 
+            // --- AutoMapper
+            builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
-            // AutoMapper
-            builder.Services.AddAutoMapper(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-            });
-            builder.Services.AddHttpContextAccessor();
-            builder.Services.AddDistributedMemoryCache(); // 👈 Required for session to store data in memory
-            builder.Services.AddSession(); // already present
+            // --- Session
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession();
 
-
-            // CORS
+            // --- CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowFrontend", policy =>
-                    policy.WithOrigins("https://localhost:7121")
+                    policy.WithOrigins("https://localhost:7121", "https://localhost:7122", "https://localhost:7123")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials());
             });
 
+            // --- JWT
             var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -57,7 +51,6 @@ namespace API_ass1
             })
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
                 options.RequireHttpsMetadata = true;
                 options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -73,28 +66,25 @@ namespace API_ass1
                 };
             });
 
-            // OData
+            // --- OData
             builder.Services.AddControllers()
                 .AddOData(opt => opt.Select().Filter().OrderBy().Expand().Count().SetMaxTop(100)
-                    .AddRouteComponents("odata", GetEdmModel())); // ✅ giữ nguyên
+                    .AddRouteComponents("odata", GetEdmModel()))
+                .AddJsonOptions(options =>
+                 {
+                     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+                     options.JsonSerializerOptions.WriteIndented = true;
+                 });
 
-            // Swagger
+            // --- Swagger
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FUNews OData API", Version = "v1" });
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
 
-
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/Account/Login";
-                    options.Cookie.SameSite = SameSiteMode.None; // Important for cross-origin cookies
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                });
-
-
+            // --- Dependency Injection
             builder.Services.AddScoped<IAccountsRepo, AccountsRepo>();
             builder.Services.AddScoped<AccountService>();
             builder.Services.AddScoped<ICategoriesRepo, CategoriesRepo>();
@@ -104,47 +94,39 @@ namespace API_ass1
             builder.Services.AddScoped<ITagsRepo, TagsRepo>();
             builder.Services.AddScoped<TagService>();
 
-
-
+            // --- Build app
             var app = builder.Build();
 
-            // ✅ CORS phải chạy TRƯỚC các pipeline xử lý
-            app.UseCors("AllowFrontend");
-            app.UseRouting();
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            app.UseCors("AllowFrontend");
-            app.UseSession(); // 👈 Add AFTER UseRouting() and BEFORE UseAuthentication()
 
             app.UseHttpsRedirection();
 
-            app.UseAuthentication();  // ✅ phải trước Authorization
+            app.UseCors("AllowFrontend");
+
+            app.UseRouting(); // ✅ Phải trước Authentication/Authorization
+
+            app.UseSession();
+            app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapControllers();
+            app.MapControllers(); // ✅ Cuối cùng
 
             app.Run();
 
-            // EDM for OData
+
             static IEdmModel GetEdmModel()
             {
                 var builder = new ODataConventionModelBuilder();
                 builder.EntitySet<SystemAccount>("Accounts");
                 builder.EntitySet<Category>("Categories");
-                builder.EntitySet<NewsArticle>("Articles").EntityType.HasKey(n => n.NewsArticleId).HasMany(n => n.Tags);
-                builder.EntityType<Tag>()
-              .HasMany(t => t.NewsArticles);
+                builder.EntitySet<NewsArticle>("Articles");
+                builder.EntitySet<Tag>("Tags");
                 return builder.GetEdmModel();
             }
-             
-
-
-
-
         }
     }
 }
-
